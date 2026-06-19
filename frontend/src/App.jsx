@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import './App.css'
 
 // const API_URL = 'http://localhost:8000/api'
-const API_URL = 'http://34.100.180.130:8000/api'
+// const API_URL = 'http://34.100.180.130:8000/api'
+const API_URL = '//34.100.180.130:8000/api'
 
 function App() {
   // Auth state
