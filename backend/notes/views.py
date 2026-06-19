@@ -60,11 +60,7 @@ class NoteViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = Note.objects.filter(user=self.request.user)
-        search = self.request.query_params.get('search')
-        if search:
-            queryset = queryset.filter(title__icontains=search)
-        return queryset
+      return Note.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save()
