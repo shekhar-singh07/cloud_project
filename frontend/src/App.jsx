@@ -199,7 +199,6 @@ function App() {
   }
 
   // ─── AUTH SCREEN ────────────────────────────
-  if (!token) {
     return (
       <div className="app">
         <div className="bg-orb bg-orb-1"></div>
@@ -320,7 +319,7 @@ function App() {
         </div>
       </div>
     )
-  }
+  
 
   // ─── NOTES SCREEN ────────────────────────────
   return (
