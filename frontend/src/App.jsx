@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-const API_URL = 'http://localhost:8000/api'
+// const API_URL = 'http://localhost:8000/api'
+const API_URL = 'http://34.100.180.130:8000/api'
 
 function App() {
   // Auth state
-  const [token, setToken] = useState(localStorage.getItem('token') || '')
+  // const [token, setToken] = useState(localStorage.getItem('token') || '')
+  // const [token, setToken] = useState("guest")
+  const [token] = useState(true)
   const [username, setUsername] = useState(localStorage.getItem('username') || '')
   const [isLogin, setIsLogin] = useState(true)
   const [authUsername, setAuthUsername] = useState('')
@@ -21,10 +24,9 @@ function App() {
   const [error, setError] = useState('')
 
   // Auth headers helper
-  const authHeaders = () => ({
-    'Content-Type': 'application/json',
-    'Authorization': `Token ${token}`,
-  })
+const authHeaders = () => ({
+  'Content-Type': 'application/json',
+})
 
   // Handle signup
   const handleSignup = async (e) => {
@@ -105,7 +107,7 @@ function App() {
 
   // Fetch notes
   const fetchNotes = async () => {
-    if (!token) return
+    //auth disabled for testing
     try {
       setIsLoading(true)
       const url = searchQuery
@@ -178,13 +180,13 @@ function App() {
   }
 
   // Fetch notes on mount and when search changes
-  useEffect(() => {
-    if (!token) return
-    const debounce = setTimeout(() => {
-      fetchNotes()
-    }, 300)
-    return () => clearTimeout(debounce)
-  }, [searchQuery, token])
+useEffect(() => {
+  const debounce = setTimeout(() => {
+    fetchNotes()
+  }, 300)
+
+  return () => clearTimeout(debounce)
+}, [searchQuery])
 
   // Format date
   const formatDate = (dateString) => {
@@ -199,126 +201,129 @@ function App() {
   }
 
   // ─── AUTH SCREEN ────────────────────────────
-    return (
-      <div className="app">
-        <div className="bg-orb bg-orb-1"></div>
-        <div className="bg-orb bg-orb-2"></div>
-        <div className="bg-orb bg-orb-3"></div>
+//   if (!token) {
+//   setToken("guest")
+// }
+//     return (
+//       <div className="app">
+//         <div className="bg-orb bg-orb-1"></div>
+//         <div className="bg-orb bg-orb-2"></div>
+//         <div className="bg-orb bg-orb-3"></div>
 
-        <div className="auth-container">
-          <div className="auth-card">
-            {/* Logo */}
-            <div className="auth-header">
-              <div className="header-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                  <polyline points="14,2 14,8 20,8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
-                </svg>
-              </div>
-              <h1 className="auth-title">CloudNotes</h1>
-              <p className="auth-subtitle">
-                {isLogin ? 'Welcome back! Sign in to your account.' : 'Create an account to get started.'}
-              </p>
-            </div>
+//         <div className="auth-container">
+//           <div className="auth-card">
+//             {/* Logo */}
+//             <div className="auth-header">
+//               <div className="header-icon">
+//                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+//                   <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+//                   <polyline points="14,2 14,8 20,8" />
+//                   <line x1="16" y1="13" x2="8" y2="13" />
+//                   <line x1="16" y1="17" x2="8" y2="17" />
+//                 </svg>
+//               </div>
+//               <h1 className="auth-title">CloudNotes</h1>
+//               <p className="auth-subtitle">
+//                 {isLogin ? 'Welcome back! Sign in to your account.' : 'Create an account to get started.'}
+//               </p>
+//             </div>
 
-            {/* Tab Switcher */}
-            <div className="auth-tabs">
-              <button
-                className={`auth-tab ${isLogin ? 'active' : ''}`}
-                onClick={() => { setIsLogin(true); setAuthError('') }}
-              >
-                Login
-              </button>
-              <button
-                className={`auth-tab ${!isLogin ? 'active' : ''}`}
-                onClick={() => { setIsLogin(false); setAuthError('') }}
-              >
-                Sign Up
-              </button>
-            </div>
+//             {/* Tab Switcher */}
+//             <div className="auth-tabs">
+//               <button
+//                 className={`auth-tab ${isLogin ? 'active' : ''}`}
+//                 onClick={() => { setIsLogin(true); setAuthError('') }}
+//               >
+//                 Login
+//               </button>
+//               <button
+//                 className={`auth-tab ${!isLogin ? 'active' : ''}`}
+//                 onClick={() => { setIsLogin(false); setAuthError('') }}
+//               >
+//                 Sign Up
+//               </button>
+//             </div>
 
-            {/* Auth Form */}
-            <form className="auth-form" onSubmit={isLogin ? handleLogin : handleSignup}>
-              <div className="form-group">
-                <label className="form-label" htmlFor="auth-username">Username</label>
-                <div className="input-wrapper">
-                  <svg className="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                  <input
-                    id="auth-username"
-                    type="text"
-                    className="auth-input"
-                    placeholder="Enter your username"
-                    value={authUsername}
-                    onChange={(e) => setAuthUsername(e.target.value)}
-                    autoComplete="username"
-                  />
-                </div>
-              </div>
+//             {/* Auth Form */}
+//             <form className="auth-form" onSubmit={isLogin ? handleLogin : handleSignup}>
+//               <div className="form-group">
+//                 <label className="form-label" htmlFor="auth-username">Username</label>
+//                 <div className="input-wrapper">
+//                   <svg className="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+//                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+//                     <circle cx="12" cy="7" r="4" />
+//                   </svg>
+//                   <input
+//                     id="auth-username"
+//                     type="text"
+//                     className="auth-input"
+//                     placeholder="Enter your username"
+//                     value={authUsername}
+//                     onChange={(e) => setAuthUsername(e.target.value)}
+//                     autoComplete="username"
+//                   />
+//                 </div>
+//               </div>
 
-              <div className="form-group">
-                <label className="form-label" htmlFor="auth-password">Password</label>
-                <div className="input-wrapper">
-                  <svg className="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                  <input
-                    id="auth-password"
-                    type="password"
-                    className="auth-input"
-                    placeholder={isLogin ? 'Enter your password' : 'Min 6 characters'}
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
-                    autoComplete={isLogin ? 'current-password' : 'new-password'}
-                  />
-                </div>
-              </div>
+//               <div className="form-group">
+//                 <label className="form-label" htmlFor="auth-password">Password</label>
+//                 <div className="input-wrapper">
+//                   <svg className="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+//                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+//                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+//                   </svg>
+//                   <input
+//                     id="auth-password"
+//                     type="password"
+//                     className="auth-input"
+//                     placeholder={isLogin ? 'Enter your password' : 'Min 6 characters'}
+//                     value={authPassword}
+//                     onChange={(e) => setAuthPassword(e.target.value)}
+//                     autoComplete={isLogin ? 'current-password' : 'new-password'}
+//                   />
+//                 </div>
+//               </div>
 
-              {authError && (
-                <div className="auth-error">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="15" y1="9" x2="9" y2="15" />
-                    <line x1="9" y1="9" x2="15" y2="15" />
-                  </svg>
-                  {authError}
-                </div>
-              )}
+//               {authError && (
+//                 <div className="auth-error">
+//                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+//                     <circle cx="12" cy="12" r="10" />
+//                     <line x1="15" y1="9" x2="9" y2="15" />
+//                     <line x1="9" y1="9" x2="15" y2="15" />
+//                   </svg>
+//                   {authError}
+//                 </div>
+//               )}
 
-              <button
-                type="submit"
-                className="auth-submit"
-                disabled={authLoading || !authUsername.trim() || !authPassword.trim()}
-              >
-                {authLoading ? (
-                  <div className="loading-spinner small"></div>
-                ) : (
-                  <>
-                    {isLogin ? 'Sign In' : 'Create Account'}
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12,5 19,12 12,19" />
-                    </svg>
-                  </>
-                )}
-              </button>
-            </form>
+//               <button
+//                 type="submit"
+//                 className="auth-submit"
+//                 disabled={authLoading || !authUsername.trim() || !authPassword.trim()}
+//               >
+//                 {authLoading ? (
+//                   <div className="loading-spinner small"></div>
+//                 ) : (
+//                   <>
+//                     {isLogin ? 'Sign In' : 'Create Account'}
+//                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+//                       <line x1="5" y1="12" x2="19" y2="12" />
+//                       <polyline points="12,5 19,12 12,19" />
+//                     </svg>
+//                   </>
+//                 )}
+//               </button>
+//             </form>
 
-            <p className="auth-footer-text">
-              {isLogin ? "Don't have an account? " : 'Already have an account? '}
-              <button className="auth-switch" onClick={() => { setIsLogin(!isLogin); setAuthError('') }}>
-                {isLogin ? 'Sign Up' : 'Sign In'}
-              </button>
-            </p>
-          </div>
-        </div>
-      </div>
-    )
+//             <p className="auth-footer-text">
+//               {isLogin ? "Don't have an account? " : 'Already have an account? '}
+//               <button className="auth-switch" onClick={() => { setIsLogin(!isLogin); setAuthError('') }}>
+//                 {isLogin ? 'Sign Up' : 'Sign In'}
+//               </button>
+//             </p>
+//           </div>
+//         </div>
+//       </div>
+//     )
   
 
   // ─── NOTES SCREEN ────────────────────────────
@@ -344,7 +349,7 @@ function App() {
               <div>
                 <h1 className="header-title">CloudNotes</h1>
                 <p className="header-subtitle">
-                  Welcome, <span className="username-highlight">{username}</span>
+                 Welcome to CloudNotes
                 </p>
               </div>
             </div>
