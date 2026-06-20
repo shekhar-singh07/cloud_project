@@ -64,5 +64,4 @@ class NoteViewSet(viewsets.ModelViewSet):
       return Note.objects.all()
 
     def perform_create(self, serializer):
-        user = User.objects.first()
-        serializer.save(user=user)
+         serializer.save()
