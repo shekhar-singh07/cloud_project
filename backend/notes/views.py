@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from .models import Note
 from .serializers import NoteSerializer, UserSerializer
 
@@ -63,4 +64,5 @@ class NoteViewSet(viewsets.ModelViewSet):
       return Note.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save()
+        user = User.objects.first()
+        serializer.save(user=user)
